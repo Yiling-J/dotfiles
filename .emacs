@@ -9,7 +9,7 @@
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (company-tern git-gutter-fringe pythonic prettier-js add-node-modules-path js2-refactor xref-js2 js2-mode rust-mode rjsx-mode editorconfig isortify expand-region flycheck-color-mode-line flycheck company-anaconda anaconda-mode counsel-projectile counsel tangotango-theme dumb-jump nyan-mode zenburn-theme powerline neotree all-the-icons magit helm-ebdb))))
+    (markdown-mode company-tern git-gutter-fringe pythonic prettier-js add-node-modules-path js2-refactor xref-js2 js2-mode rust-mode rjsx-mode editorconfig isortify expand-region flycheck-color-mode-line flycheck company-anaconda anaconda-mode counsel-projectile counsel tangotango-theme dumb-jump nyan-mode zenburn-theme powerline neotree all-the-icons magit helm-ebdb))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -66,7 +66,7 @@
 (setq py-python-command "python3")
 (setq company-tooltip-align-annotations t)
 (setq company-selection-wrap-around t)
-(setq company-idle-delay 0.0)
+(setq company-idle-delay 0.5)
 (setq backup-directory-alist (list (cons ".*" backup-dir)))
 (setq auto-save-list-file-prefix autosave-dir)
 (setq auto-save-file-name-transforms `((".*" ,autosave-dir t)))
