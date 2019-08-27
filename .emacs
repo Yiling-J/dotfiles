@@ -9,7 +9,7 @@
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (markdown-mode company-tern git-gutter-fringe pythonic prettier-js add-node-modules-path js2-refactor xref-js2 js2-mode rust-mode rjsx-mode editorconfig isortify expand-region flycheck-color-mode-line flycheck company-anaconda anaconda-mode counsel-projectile counsel tangotango-theme dumb-jump nyan-mode zenburn-theme powerline neotree all-the-icons magit helm-ebdb))))
+    (csv-mode docker-tramp json-mode markdown-mode company-tern git-gutter-fringe pythonic prettier-js add-node-modules-path js2-refactor xref-js2 js2-mode rust-mode rjsx-mode editorconfig expand-region flycheck-color-mode-line flycheck company-anaconda anaconda-mode counsel-projectile counsel tangotango-theme dumb-jump nyan-mode zenburn-theme powerline neotree all-the-icons magit helm-ebdb))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
