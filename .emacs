@@ -2,14 +2,10 @@
 
 ;;; Code:
 
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(package-selected-packages
-   (quote
-    (org-jira csv-mode docker-tramp json-mode markdown-mode company-tern git-gutter-fringe pythonic prettier-js add-node-modules-path js2-refactor xref-js2 js2-mode rust-mode rjsx-mode editorconfig expand-region flycheck-color-mode-line flycheck company-anaconda anaconda-mode counsel-projectile counsel tangotango-theme dumb-jump nyan-mode zenburn-theme powerline neotree all-the-icons magit helm-ebdb))))
+
+(setq custom-file "~/.emacs-custom.el")
+(load custom-file)
+
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -35,6 +31,10 @@
 (require 'projectile)
 (require 'tramp)
 (require 'xref-js2)
+(require 'transient)
+(require 'magit)
+(require 'org-jira)
+(require 'ivy)
 
 (menu-bar-mode -1)
 (toggle-scroll-bar -1)
@@ -140,16 +140,44 @@
           (if (>  (length (flycheck-mode-line-status-text)) 6)
           (list-flycheck-errors)
 	  (if (get-buffer-window "*Flycheck errors*") (delete-window (get-buffer-window "*Flycheck errors*")))
-      ))
+	  ))
 
-(custom-set-variables '(org-jira-use-status-as-todo t))
+(defvar jira-issues)
 
-(defcustom org-jira-custom-jqls
-  '(
-    (:jql " assignee = currentUser() and project = ID and Sprint = Sprint order by created DESC "
-	  :filename "jira"
+(defun commit-with-task ()
+  "Choose jira task and auto add task id as commit prefix.
+Need to custom some variables before use this: org-jira-custom-jqls, jiralib-url."
+  (interactive)
+  (let ((key nil) (key2 nil) (task nil) (final nil) (word nil) (summary nil) (task-id nil))
+  (setq jira-issues (org-jira-get-issues-from-custom-jql))
+  (dolist (issue jira-issues)
+    (setq key (car (seq-filter (lambda (x) (string= (car x) "key")) issue)))
+    (setq key2 (cdr key))
+    (setq issue (car (seq-filter (lambda (x) (string= (car x) "fields")) issue)))
+    
+    (setq summary (seq-reduce (lambda (a b)
+			    (setq word (cond
+					((stringp b) nil)
+					((symbolp b) nil)
+					((string= (car b) "summary")
+					  (concat a (cdr b))
+					 )
+					))
+			    (or word a)
+			    ) issue "")
 	  )
+    (setq task (concat key2 " " summary))
+    (setq final (append final (list task)))
     )
-  "A list of plists with :jql and :filename keys to run arbitrary user JQL."
-  :group 'org-jira
-  :type '(alist :value-type plist))
+  (setq task (ivy-read "Choose your task:" final))
+  (setq task-id (car (split-string task)))
+  (setq task-id (concat "[" task-id "] "))
+  (magit-commit-create (list "--message" task-id))
+  (magit-commit-create '("--amend"))
+  ))
+
+(transient-append-suffix 'magit-commit "c"
+  '("j" "Commit with jira" commit-with-task))
+
+(provide '.emacs)
+;;; .emacs ends here
