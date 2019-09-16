@@ -149,7 +149,7 @@
 Need to custom some variables before use this: org-jira-custom-jqls, jiralib-url."
   (interactive)
   (let ((key nil) (key2 nil) (task nil) (final nil) (word nil) (summary nil) (task-id nil))
-  (setq jira-issues (org-jira-get-issues-from-custom-jql))
+  (setq jira-issues (jiralib-do-jql-search  (car (cdr (car org-jira-custom-jqls)))))
   (dolist (issue jira-issues)
     (setq key (car (seq-filter (lambda (x) (string= (car x) "key")) issue)))
     (setq key2 (cdr key))
