@@ -147,6 +147,8 @@
 (defun commit-with-task ()
   "Choose jira task and auto add task id as commit prefix.
 Need to custom some variables before use this: org-jira-custom-jqls, jiralib-url."
+
+ ;; example jql for current user in progress task: assignee = currentUser() and status = "In Progress" order by created DESC
   (interactive)
   (let ((key nil) (key2 nil) (task nil) (final nil) (word nil) (summary nil) (task-id nil))
   (setq jira-issues (jiralib-do-jql-search  (car (cdr (car org-jira-custom-jqls)))))
