@@ -174,7 +174,7 @@ Need to custom some variables before use this: org-jira-custom-jqls, jiralib-url
   (setq task (ivy-read "Choose your task:" final))
   (setq task-id (car (split-string task)))
   (setq task-id (concat "[" task-id "] "))
-  (magit-commit-create (list "--message" task-id))
+  (magit-run-git "commit" "--message" task-id)
   (magit-commit-create '("--amend"))
   ))
 
