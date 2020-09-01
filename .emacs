@@ -23,7 +23,7 @@
     ;; For important compatibility libraries like cl-lib
     (add-to-list 'package-archives '("gnu" . (concat proto "://elpa.gnu.org/packages/")))))
 
-;; WIP override anaconda-mode-server-command to support jedi 0.7 and get_context
+;; override anaconda-mode-server-command to support jedi 0.7 and get_context
 (defvar anaconda-mode-server-command "
 
 from __future__ import print_function
@@ -320,12 +320,14 @@ service_factory.service_factory(app, server_address, 0, 'anaconda_mode port {por
 	  (if (get-buffer-window "*Flycheck errors*") (delete-window (get-buffer-window "*Flycheck errors*")))
 	  ))
 
-(defun anaconda-mode-get-context ()
-  "Find definitions for thing at point."
+(defun anaconda-mode-django-test-here ()
+  "Run python manage.py test {current function}"
   (interactive)
   (anaconda-mode-call
    "get_context"
    (lambda (result)
+     (switch-to-buffer-other-window "vterm")
+     (process-send-string "vterm" (format "python manage.py test %s\n" result))
      (anaconda-mode-show-xrefs result nil "No definitions found"))))
 
 (defvar jira-issues)
