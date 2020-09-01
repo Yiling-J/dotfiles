@@ -321,7 +321,7 @@ service_factory.service_factory(app, server_address, 0, 'anaconda_mode port {por
 	  ))
 
 (defun anaconda-mode-django-test-here ()
-  "Run python manage.py test {current function}"
+  "Run python manage.py test on function at cursor"
   (interactive)
   (anaconda-mode-call
    "get_context"
