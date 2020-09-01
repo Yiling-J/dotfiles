@@ -22,6 +22,183 @@
   (when (< emacs-major-version 24)
     ;; For important compatibility libraries like cl-lib
     (add-to-list 'package-archives '("gnu" . (concat proto "://elpa.gnu.org/packages/")))))
+
+;; WIP override anaconda-mode-server-command to support jedi 0.7 and get_context
+(defvar anaconda-mode-server-command "
+
+from __future__ import print_function
+
+# CLI arguments.
+
+import sys
+
+assert len(sys.argv) > 3, 'CLI arguments: %s' % sys.argv
+
+server_directory = sys.argv[-3]
+server_address = sys.argv[-2]
+virtual_environment = sys.argv[-1]
+
+# Ensure directory.
+
+import os
+
+server_directory = os.path.expanduser(server_directory)
+virtual_environment = os.path.expanduser(virtual_environment)
+
+if not os.path.exists(server_directory):
+    os.makedirs(server_directory)
+
+# Installation check.
+
+jedi_dep = ('jedi', '0.17.2')
+service_factory_dep = ('service_factory', '0.1.5')
+
+missing_dependencies = []
+
+def instrument_installation():
+    for package in (jedi_dep, service_factory_dep):
+        package_is_installed = False
+        for path in os.listdir(server_directory):
+            path = os.path.join(server_directory, path)
+            if path.endswith('.egg') and os.path.isdir(path):
+                if path not in sys.path:
+                    sys.path.insert(0, path)
+                if package[0] in path:
+                    package_is_installed = True
+        if not package_is_installed:
+            missing_dependencies.append('>='.join(package))
+
+instrument_installation()
+
+# Installation.
+
+def install_deps():
+    import site
+    import setuptools.command.easy_install
+    site.addsitedir(server_directory)
+    cmd = ['--install-dir', server_directory,
+           '--site-dirs', server_directory,
+           '--always-copy','--always-unzip']
+    cmd.extend(missing_dependencies)
+    setuptools.command.easy_install.main(cmd)
+    instrument_installation()
+
+if missing_dependencies:
+    install_deps()
+
+del missing_dependencies[:]
+
+try:
+    import jedi
+except ImportError:
+    missing_dependencies.append('>='.join(jedi_dep))
+
+try:
+    import service_factory
+except ImportError:
+    missing_dependencies.append('>='.join(service_factory_dep))
+
+# Try one more time in case if anaconda installation gets broken somehow
+if missing_dependencies:
+    install_deps()
+    import jedi
+    import service_factory
+
+# Setup server.
+
+assert jedi.__version__ >= jedi_dep[1], 'Jedi version should be >= %s, current version: %s' % (jedi_dep[1], jedi.__version__,)
+
+if virtual_environment:
+    virtual_environment = jedi.create_environment(virtual_environment, safe=False)
+else:
+    virtual_environment = None
+
+# Define JSON-RPC application.
+
+import functools
+import threading
+
+def script_method(f):
+    @functools.wraps(f)
+    def wrapper(source, line, column, path):
+        timer = threading.Timer(30.0, sys.exit)
+        timer.start()
+        result = f(jedi.Script(source, path, environment=virtual_environment), line, column)
+        timer.cancel()
+        return result
+    return wrapper
+
+def process_definitions(f):
+    @functools.wraps(f)
+    def wrapper(script, line, column):
+        definitions = f(script, line, column)
+        if len(definitions) == 1 and not definitions[0].module_path:
+            return '%s is defined in %s compiled module' % (
+                definitions[0].name, definitions[0].module_name)
+        return [[definition.module_path,
+                 definition.line,
+                 definition.column,
+                 definition.get_line_code().strip()]
+                for definition in definitions
+                if definition.module_path] or None
+    return wrapper
+
+@script_method
+def complete(script, line, column):
+    return [[definition.name, definition.type]
+            for definition in script.complete(line=line, column=column)]
+
+@script_method
+def company_complete(script, line, column):
+    return [[definition.name,
+             definition.type,
+             definition.docstring(),
+             definition.module_path,
+             definition.line]
+            for definition in script.complete(line=line, column=column)]
+
+@script_method
+def show_doc(script, line, column):
+    return [[definition.module_name, definition.docstring()]
+            for definition in script.goto_definitions(line=line, column=column)]
+
+@script_method
+@process_definitions
+def goto_definitions(script, line, column):
+    return script.goto_definitions(line=line, column=column)
+
+@script_method
+@process_definitions
+def goto_assignments(script, line, column):
+    return script.goto_assignments(line=line, column=column)
+
+@script_method
+@process_definitions
+def usages(script, line, column):
+    return script.usages(line=line, column=column)
+
+@script_method
+def eldoc(script, line, column):
+    signatures = script.get_signatures(line=line, column=column)
+    if len(signatures) == 1:
+        signature = signatures[0]
+        return [signature.name,
+                signature.index,
+                [param.description[6:] for param in signature.params]]
+
+@script_method
+def get_context(script, line, column):
+    name = script.get_context(line=line, column=column).full_name
+    print(name)
+    return name
+
+# Run.
+
+app = [complete, company_complete, show_doc, goto_definitions, goto_assignments, usages, eldoc, get_context]
+
+service_factory.service_factory(app, server_address, 0, 'anaconda_mode port {port}')
+
+" "Run `anaconda-mode' server.")
 (package-initialize)
 (require 'company)
 (require 'company-tern)
@@ -141,6 +318,14 @@
           (list-flycheck-errors)
 	  (if (get-buffer-window "*Flycheck errors*") (delete-window (get-buffer-window "*Flycheck errors*")))
 	  ))
+
+(defun anaconda-mode-get-context ()
+  "Find definitions for thing at point."
+  (interactive)
+  (anaconda-mode-call
+   "get_context"
+   (lambda (result)
+     (anaconda-mode-show-xrefs result nil "No definitions found"))))
 
 (defvar jira-issues)
 
