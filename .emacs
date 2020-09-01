@@ -123,7 +123,7 @@ def script_method(f):
     def wrapper(source, line, column, path):
         timer = threading.Timer(30.0, sys.exit)
         timer.start()
-        result = f(jedi.Script(source, path, environment=virtual_environment), line, column)
+        result = f(jedi.Script(code=source, path=path, environment=virtual_environment), line, column)
         timer.cancel()
         return result
     return wrapper
@@ -160,22 +160,23 @@ def company_complete(script, line, column):
 @script_method
 def show_doc(script, line, column):
     return [[definition.module_name, definition.docstring()]
-            for definition in script.goto_definitions(line=line, column=column)]
+            for definition in script.infer(line=line, column=column)]
 
 @script_method
 @process_definitions
 def goto_definitions(script, line, column):
-    return script.goto_definitions(line=line, column=column)
+    print(line)
+    return script.infer(line=line, column=column)
 
 @script_method
 @process_definitions
 def goto_assignments(script, line, column):
-    return script.goto_assignments(line=line, column=column)
+    return script.goto(line=line, column=column)
 
 @script_method
 @process_definitions
 def usages(script, line, column):
-    return script.usages(line=line, column=column)
+    return script.get_references(line=line, column=column)
 
 @script_method
 def eldoc(script, line, column):
