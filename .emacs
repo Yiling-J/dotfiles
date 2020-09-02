@@ -165,7 +165,6 @@ def show_doc(script, line, column):
 @script_method
 @process_definitions
 def goto_definitions(script, line, column):
-    print(line)
     return script.infer(line=line, column=column)
 
 @script_method
@@ -328,7 +327,7 @@ service_factory.service_factory(app, server_address, 0, 'anaconda_mode port {por
    (lambda (result)
      (switch-to-buffer-other-window "vterm")
      (process-send-string "vterm" (format "python manage.py test %s\n" result))
-     (anaconda-mode-show-xrefs result nil "No definitions found"))))
+     )))
 
 (defvar jira-issues)
 
