@@ -5,6 +5,7 @@
 
 (setq custom-file "~/.emacs-custom.el")
 (load custom-file)
+(setenv "PATH" (concat "/usr/local/go/bin:" (getenv "PATH")))
 
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
@@ -212,6 +213,7 @@ service_factory.service_factory(app, server_address, 0, 'anaconda_mode port {por
 (require 'magit)
 (require 'org-jira)
 (require 'ivy)
+(require 'lsp-mode)
 
 (menu-bar-mode -1)
 (toggle-scroll-bar -1)
@@ -254,7 +256,7 @@ service_factory.service_factory(app, server_address, 0, 'anaconda_mode port {por
 (setq prettier-js-args '(
   "--single-quote" "true"
   "--no-semi" "true"
-))
+  ))
 
 (add-hook 'after-init-hook 'global-company-mode)
 (add-hook 'after-init-hook #'global-flycheck-mode)
@@ -267,10 +269,6 @@ service_factory.service_factory(app, server_address, 0, 'anaconda_mode port {por
   (add-hook 'xref-backend-functions #'xref-js2-xref-backend nil t)))
 (add-hook 'rjsx-mode-hook #'js2-refactor-mode)
 (add-hook 'rjsx-mode-hook 'prettier-js-mode)
-(setq prettier-js-args '(
-  "--single-quote" "true"
-  "--no-semi" "true"
-))
 
 (add-hook 'python-mode-hook 'anaconda-mode)
 (add-hook 'python-mode-hook 'anaconda-eldoc-mode)
@@ -278,6 +276,8 @@ service_factory.service_factory(app, server_address, 0, 'anaconda_mode port {por
                 (lambda () (add-to-list 'write-file-functions 'delete-trailing-whitespace)))
 
 (add-hook 'flycheck-after-syntax-check-hook #'error-list)
+(add-hook 'go-mode-hook 'lsp)
+(add-hook 'go-mode-hook 'yas-minor-mode)
 
 (add-to-list 'display-buffer-alist
              `(,(rx bos "*Flycheck errors*" eos)
@@ -288,7 +288,6 @@ service_factory.service_factory(app, server_address, 0, 'anaconda_mode port {por
               (window-height   . 0.33)))
 (add-to-list 'company-backends 'company-tern)
 (add-to-list 'auto-mode-alist '("\\.js\\'" . rjsx-mode))
-
 
 (eval-after-load "company"
  '(add-to-list 'company-backends 'company-anaconda))
@@ -312,6 +311,10 @@ service_factory.service_factory(app, server_address, 0, 'anaconda_mode port {por
 
 (eval-after-load 'js2-mode
   '(add-hook 'js2-mode-hook #'add-node-modules-path))
+
+(lsp-register-custom-settings
+ '(("gopls.completeUnimported" t t)
+   ("gopls.staticcheck" t t)))
 
 (defun error-list ()
           (if (>  (length (flycheck-mode-line-status-text)) 6)
