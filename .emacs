@@ -248,8 +248,7 @@ service_factory.service_factory(app, server_address, 0, 'anaconda_mode port {por
 (setq tramp-backup-directory-alist backup-directory-alist)
 (setq tramp-auto-save-directory autosave-dir)
 (setq prettier-js-args '(
-  "--single-quote" "true"
-  "--no-semi" "true"
+  "--single-quote"
   ))
 
 (add-hook 'after-init-hook 'global-company-mode)
