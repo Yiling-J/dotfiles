@@ -205,15 +205,14 @@ service_factory.service_factory(app, server_address, 0, 'anaconda_mode port {por
 (require 'company-tern)
 (require 'expand-region)
 (require 'flycheck)
-(require 'js2-mode)
 (require 'projectile)
 (require 'tramp)
-(require 'xref-js2)
 (require 'transient)
 (require 'magit)
 (require 'org-jira)
 (require 'ivy)
 (require 'lsp-mode)
+(require 'prettier-js)
 
 (menu-bar-mode -1)
 (toggle-scroll-bar -1)
@@ -240,9 +239,6 @@ service_factory.service_factory(app, server_address, 0, 'anaconda_mode port {por
 (setq flycheck-check-syntax-automatically '(mode-enabled save))
 (setq flycheck-display-errors-function
       #'flycheck-display-error-messages-unless-error-list)
-(setq js2-mode-show-parse-errors nil)
-(setq js2-mode-show-strict-warnings nil)
-(setq py-python-command "python3")
 (setq company-tooltip-align-annotations t)
 (setq company-selection-wrap-around t)
 (setq company-idle-delay 0.5)
@@ -251,8 +247,6 @@ service_factory.service_factory(app, server_address, 0, 'anaconda_mode port {por
 (setq auto-save-file-name-transforms `((".*" ,autosave-dir t)))
 (setq tramp-backup-directory-alist backup-directory-alist)
 (setq tramp-auto-save-directory autosave-dir)
-(setq py-trailing-whitespace-smart-delete-p t)
-(setq show-paren-delay 0)
 (setq prettier-js-args '(
   "--single-quote" "true"
   "--no-semi" "true"
@@ -260,15 +254,6 @@ service_factory.service_factory(app, server_address, 0, 'anaconda_mode port {por
 
 (add-hook 'after-init-hook 'global-company-mode)
 (add-hook 'after-init-hook #'global-flycheck-mode)
-
-(add-hook 'rjsx-mode-hook (lambda ()
-                           (tern-mode)
-                           (company-mode)))
-(add-hook 'rjsx-mode-hook #'js2-imenu-extras-mode)
-(add-hook 'rjsx-mode-hook (lambda ()
-  (add-hook 'xref-backend-functions #'xref-js2-xref-backend nil t)))
-(add-hook 'rjsx-mode-hook #'js2-refactor-mode)
-(add-hook 'rjsx-mode-hook 'prettier-js-mode)
 
 (add-hook 'python-mode-hook 'anaconda-mode)
 (add-hook 'python-mode-hook 'anaconda-eldoc-mode)
@@ -278,6 +263,8 @@ service_factory.service_factory(app, server_address, 0, 'anaconda_mode port {por
 (add-hook 'flycheck-after-syntax-check-hook #'error-list)
 (add-hook 'go-mode-hook 'lsp)
 (add-hook 'go-mode-hook 'yas-minor-mode)
+(add-hook 'js-mode-hook 'prettier-js-mode)
+(add-hook 'js-mode-hook 'lsp)
 
 (add-to-list 'display-buffer-alist
              `(,(rx bos "*Flycheck errors*" eos)
@@ -287,7 +274,6 @@ service_factory.service_factory(app, server_address, 0, 'anaconda_mode port {por
               (reusable-frames . visible)
               (window-height   . 0.33)))
 (add-to-list 'company-backends 'company-tern)
-(add-to-list 'auto-mode-alist '("\\.js\\'" . rjsx-mode))
 
 (eval-after-load "company"
  '(add-to-list 'company-backends 'company-anaconda))
@@ -306,11 +292,6 @@ service_factory.service_factory(app, server_address, 0, 'anaconda_mode port {por
 (set-face-background 'hl-line "#3e4446")
 
 (global-set-key (kbd "C-<return>") 'counsel-semantic)
-
-(define-key js2-mode-map (kbd "M-.") nil)
-
-(eval-after-load 'js2-mode
-  '(add-hook 'js2-mode-hook #'add-node-modules-path))
 
 (lsp-register-custom-settings
  '(("gopls.completeUnimported" t t)
