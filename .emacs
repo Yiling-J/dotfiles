@@ -202,7 +202,6 @@ service_factory.service_factory(app, server_address, 0, 'anaconda_mode port {por
 " "Run `anaconda-mode' server.")
 (package-initialize)
 (require 'company)
-(require 'company-tern)
 (require 'expand-region)
 (require 'flycheck)
 (require 'projectile)
@@ -213,6 +212,7 @@ service_factory.service_factory(app, server_address, 0, 'anaconda_mode port {por
 (require 'ivy)
 (require 'lsp-mode)
 (require 'prettier-js)
+(require 'js)
 
 (menu-bar-mode -1)
 (toggle-scroll-bar -1)
@@ -236,6 +236,8 @@ service_factory.service_factory(app, server_address, 0, 'anaconda_mode port {por
 (defvar backup-dir (expand-file-name "~/.emacs.d/emacs_backup/"))
 (defvar autosave-dir (expand-file-name "~/.emacs.d/autosave/"))
 
+(define-key js-mode-map (kbd "M-.") #'xref-find-definitions)
+
 (setq flycheck-check-syntax-automatically '(mode-enabled save))
 (setq flycheck-display-errors-function
       #'flycheck-display-error-messages-unless-error-list)
@@ -250,6 +252,8 @@ service_factory.service_factory(app, server_address, 0, 'anaconda_mode port {por
 (setq prettier-js-args '(
   "--single-quote"
   ))
+
+(setq lsp-completion-provider :capf)
 
 (add-hook 'after-init-hook 'global-company-mode)
 (add-hook 'after-init-hook #'global-flycheck-mode)
@@ -272,7 +276,6 @@ service_factory.service_factory(app, server_address, 0, 'anaconda_mode port {por
               (side            . bottom)
               (reusable-frames . visible)
               (window-height   . 0.33)))
-(add-to-list 'company-backends 'company-tern)
 
 (eval-after-load "company"
  '(add-to-list 'company-backends 'company-anaconda))
