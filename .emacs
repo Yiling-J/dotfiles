@@ -2,10 +2,8 @@
 
 ;;; Code:
 
-
 (setq custom-file "~/.emacs-custom.el")
 (load custom-file)
-(setenv "PATH" (concat "/usr/local/go/bin:" (getenv "PATH")))
 
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
@@ -264,10 +262,10 @@ service_factory.service_factory(app, server_address, 0, 'anaconda_mode port {por
                 (lambda () (add-to-list 'write-file-functions 'delete-trailing-whitespace)))
 
 (add-hook 'flycheck-after-syntax-check-hook #'error-list)
-(add-hook 'go-mode-hook 'lsp)
+(add-hook 'go-mode-hook 'lsp-deferred)
 (add-hook 'go-mode-hook 'yas-minor-mode)
 (add-hook 'js-mode-hook 'prettier-js-mode)
-(add-hook 'js-mode-hook 'lsp)
+(add-hook 'js-mode-hook 'lsp-deferred)
 
 (add-to-list 'display-buffer-alist
              `(,(rx bos "*Flycheck errors*" eos)
