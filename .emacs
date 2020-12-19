@@ -266,6 +266,7 @@ service_factory.service_factory(app, server_address, 0, 'anaconda_mode port {por
 (add-hook 'go-mode-hook 'yas-minor-mode)
 (add-hook 'js-mode-hook 'prettier-js-mode)
 (add-hook 'js-mode-hook 'lsp-deferred)
+(add-hook 'before-save-hook #'gofmt-before-save)
 
 (add-to-list 'display-buffer-alist
              `(,(rx bos "*Flycheck errors*" eos)
