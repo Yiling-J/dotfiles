@@ -258,8 +258,6 @@ service_factory.service_factory(app, server_address, 0, 'anaconda_mode port {por
 (add-hook 'after-init-hook 'global-company-mode)
 (add-hook 'after-init-hook #'global-flycheck-mode)
 
-(add-hook 'python-mode-hook 'anaconda-mode)
-(add-hook 'python-mode-hook 'anaconda-eldoc-mode)
 (add-hook 'python-mode-hook
                 (lambda () (add-to-list 'write-file-functions 'delete-trailing-whitespace)))
 
@@ -269,6 +267,13 @@ service_factory.service_factory(app, server_address, 0, 'anaconda_mode port {por
 (add-hook 'js-mode-hook 'prettier-js-mode)
 (add-hook 'js-mode-hook 'lsp-deferred)
 (add-hook 'before-save-hook #'gofmt-before-save)
+
+(use-package lsp-python-ms
+  :ensure t
+  :init (setq lsp-python-ms-auto-install-server t)
+  :hook (python-mode . (lambda ()
+                          (require 'lsp-python-ms)
+                          (lsp-deferred))))
 
 (add-to-list 'display-buffer-alist
              `(,(rx bos "*Flycheck errors*" eos)
