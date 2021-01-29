@@ -65,7 +65,7 @@ def instrument_installation():
                 if package[0] in path:
                     package_is_installed = True
         if not package_is_installed:
-            missing_dependencies.append('>='.join(package))
+            missing_dependencies.append('=='.join(package))
 
 instrument_installation()
 
@@ -227,6 +227,8 @@ service_factory.service_factory(app, server_address, 0, 'anaconda_mode port {por
 (show-paren-mode +1)
 (nyan-mode +1)
 (ivy-mode +1)
+
+(use-package lsp-ui)
 
 (eval-after-load "flycheck"
   '(add-hook 'flycheck-mode-hook 'flycheck-color-mode-line-mode))
