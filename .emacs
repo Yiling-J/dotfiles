@@ -229,6 +229,7 @@ service_factory.service_factory(app, server_address, 0, 'anaconda_mode port {por
 (ivy-mode +1)
 (display-time-mode +1)
 (display-battery-mode +1)
+(parrot-mode +1)
 
 (use-package lsp-ui)
 
@@ -270,6 +271,7 @@ service_factory.service_factory(app, server_address, 0, 'anaconda_mode port {por
 (add-hook 'js-mode-hook 'prettier-js-mode)
 (add-hook 'js-mode-hook 'lsp-deferred)
 (add-hook 'before-save-hook #'gofmt-before-save)
+(add-hook 'before-save-hook 'parrot-start-animation)
 
 (use-package lsp-python-ms
   :ensure t
@@ -281,6 +283,10 @@ service_factory.service_factory(app, server_address, 0, 'anaconda_mode port {por
 (use-package doom-modeline
   :ensure t
   :init (doom-modeline-mode 1))
+
+(use-package parrot
+  :config
+  (parrot-mode))
 
 (defvar-local flycheck-local-checkers nil)
   (defun +flycheck-checker-get(fn checker property)
