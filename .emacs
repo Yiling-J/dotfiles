@@ -276,6 +276,17 @@ service_factory.service_factory(app, server_address, 0, 'anaconda_mode port {por
                           (require 'lsp-python-ms)
                           (lsp-deferred))))
 
+(defvar-local flycheck-local-checkers nil)
+  (defun +flycheck-checker-get(fn checker property)
+    (or (alist-get property (alist-get checker flycheck-local-checkers))
+        (funcall fn checker property)))
+  (advice-add 'flycheck-checker-get :around '+flycheck-checker-get)
+
+
+(add-hook 'python-mode-hook (lambda()
+                            (setq flycheck-local-checkers '((lsp . ((next-checkers . (python-flake8))))))))
+
+
 (add-to-list 'display-buffer-alist
              `(,(rx bos "*Flycheck errors*" eos)
               (display-buffer-reuse-window
