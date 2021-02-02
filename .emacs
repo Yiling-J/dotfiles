@@ -227,6 +227,8 @@ service_factory.service_factory(app, server_address, 0, 'anaconda_mode port {por
 (show-paren-mode +1)
 (nyan-mode +1)
 (ivy-mode +1)
+(display-time-mode +1)
+(display-battery-mode +1)
 
 (use-package lsp-ui)
 
@@ -276,6 +278,10 @@ service_factory.service_factory(app, server_address, 0, 'anaconda_mode port {por
                           (require 'lsp-python-ms)
                           (lsp-deferred))))
 
+(use-package doom-modeline
+  :ensure t
+  :init (doom-modeline-mode 0))
+
 (defvar-local flycheck-local-checkers nil)
   (defun +flycheck-checker-get(fn checker property)
     (or (alist-get property (alist-get checker flycheck-local-checkers))
@@ -303,6 +309,8 @@ service_factory.service_factory(app, server_address, 0, 'anaconda_mode port {por
 (global-set-key (kbd "C-=") 'er/expand-region)
 
 (global-set-key (kbd "C-x g") 'magit-status)
+
+(global-set-key (kbd "M-.") 'lsp-ui-peek-find-definitions)
 
 (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
 
