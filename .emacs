@@ -271,6 +271,7 @@ service_factory.service_factory(app, server_address, 0, 'anaconda_mode port {por
 (add-hook 'js-mode-hook 'prettier-js-mode)
 (add-hook 'js-mode-hook 'lsp-deferred)
 (add-hook 'before-save-hook #'gofmt-before-save)
+(add-hook 'before-save-hook #'lsp-organize-imports)
 (add-hook 'before-save-hook 'parrot-start-animation)
 
 (use-package lsp-python-ms
