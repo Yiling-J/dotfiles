@@ -280,7 +280,7 @@ service_factory.service_factory(app, server_address, 0, 'anaconda_mode port {por
 
 (use-package doom-modeline
   :ensure t
-  :init (doom-modeline-mode 0))
+  :init (doom-modeline-mode 1))
 
 (defvar-local flycheck-local-checkers nil)
   (defun +flycheck-checker-get(fn checker property)
