@@ -254,6 +254,7 @@ service_factory.service_factory(app, server_address, 0, 'anaconda_mode port {por
   ))
 
 (setq lsp-completion-provider :capf)
+(setq gc-cons-threshold 100000000)
 
 (add-hook 'after-init-hook 'global-company-mode)
 (add-hook 'after-init-hook #'global-flycheck-mode)
