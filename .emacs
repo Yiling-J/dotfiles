@@ -223,7 +223,6 @@ service_factory.service_factory(app, server_address, 0, 'anaconda_mode port {por
 (counsel-projectile-mode +1)
 (editorconfig-mode +1)
 (delete-selection-mode +1)
-(semantic-mode +1)
 (show-paren-mode +1)
 (nyan-mode +1)
 (ivy-mode +1)
@@ -258,6 +257,7 @@ service_factory.service_factory(app, server_address, 0, 'anaconda_mode port {por
 
 (setq lsp-completion-provider :capf)
 (setq gc-cons-threshold 100000000)
+(setq read-process-output-max (* 1024 1024)) ;; 1mb
 
 (add-hook 'after-init-hook 'global-company-mode)
 (add-hook 'after-init-hook #'global-flycheck-mode)
@@ -319,6 +319,8 @@ service_factory.service_factory(app, server_address, 0, 'anaconda_mode port {por
 
 (global-set-key (kbd "M-.") 'lsp-ui-peek-find-definitions)
 
+(global-set-key "\C-s" 'swiper)
+
 (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
 
 (when (fboundp 'windmove-default-keybindings)
@@ -326,7 +328,7 @@ service_factory.service_factory(app, server_address, 0, 'anaconda_mode port {por
 
 (set-face-background 'hl-line "#3e4446")
 
-(global-set-key (kbd "C-<return>") 'counsel-semantic)
+(global-set-key (kbd "C-<return>") 'counsel-semantic-or-imenu)
 
 (lsp-register-custom-settings
  '(("gopls.completeUnimported" t t)
@@ -362,7 +364,7 @@ Need to custom some variables before use this: org-jira-custom-jqls, jiralib-url
     (setq key (car (seq-filter (lambda (x) (string= (car x) "key")) issue)))
     (setq key2 (cdr key))
     (setq issue (car (seq-filter (lambda (x) (string= (car x) "fields")) issue)))
-    
+
     (setq summary (seq-reduce (lambda (a b)
 			    (setq word (cond
 					((stringp b) nil)
