@@ -9,6 +9,7 @@
  '(jiralib-url "https://jira.xxx.com")
  '(lsp-enable-file-watchers nil)
  '(lsp-ui-doc-position 'at-point)
+ '(lsp-ui-doc-show-with-cursor t)
  '(org-jira-custom-jqls
    '((:jql " assignee = currentUser() and status = \"In Progress\" order by created DESC" :filename "jira")))
  '(org-jira-use-status-as-todo t)
