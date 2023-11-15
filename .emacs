@@ -4,6 +4,15 @@
 
 (setq custom-file "~/.emacs-custom.el")
 (load custom-file)
+(cua-mode t)
+(setq cua-auto-tabify-rectangles nil) ;; Don't tabify after rectangle commands
+(transient-mark-mode 1) ;; No region when it is not highlighted
+(setq cua-keep-region-after-copy t) ;; Standard Windows behaviour
+
+;; shift + click select region
+(define-key global-map (kbd "<S-down-mouse-1>") 'mouse-save-then-kill)
+ (define-key global-map (kbd "<S-mouse-1>") 'mouse-set-point)
+ (put 'mouse-set-point 'CUA 'move)
 
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
@@ -92,7 +101,7 @@
 (setq mac-option-key-is-meta t)
 (setq mac-command-key-is-meta nil)
 (setq mac-option-modifier 'meta)
-(setq mac-command-modifier nil)
+(setq mac-command-modifier 'control)
 
 (add-hook 'after-init-hook 'global-company-mode)
 (add-hook 'after-init-hook #'global-flycheck-mode)
