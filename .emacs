@@ -23,6 +23,11 @@
     (add-to-list 'package-archives '("gnu" . (concat proto "://elpa.gnu.org/packages/")))))
 
 (package-initialize)
+
+
+(when (memq window-system '(mac ns x))
+  (exec-path-from-shell-initialize))
+
 (require 'company)
 (require 'expand-region)
 (require 'flycheck)
@@ -81,6 +86,13 @@
 
 (setq gc-cons-threshold 100000000)
 (setq read-process-output-max (* 1024 1024)) ;; 1mb
+(setq rustic-format-on-save t)
+(setq lsp-dart-flutter-widget-guides nil)
+(setq lsp-enable-on-type-formatting nil)
+(setq mac-option-key-is-meta t)
+(setq mac-command-key-is-meta nil)
+(setq mac-option-modifier 'meta)
+(setq mac-command-modifier nil)
 
 (add-hook 'after-init-hook 'global-company-mode)
 (add-hook 'after-init-hook #'global-flycheck-mode)
@@ -97,6 +109,11 @@
 (add-hook 'before-save-hook #'lsp-organize-imports)
 (add-hook 'before-save-hook 'parrot-start-animation)
 (add-hook 'python-mode-hook 'blacken-mode)
+(add-hook 'rustic-mode-hook #'lsp)
+(add-hook 'dart-mode-hook 'lsp)
+
+(setq gc-cons-threshold (* 100 1024 1024)
+      read-process-output-max (* 1024 1024))
 
 (use-package lsp-jedi
   :ensure t
@@ -164,44 +181,12 @@
 	  (if (get-buffer-window "*Flycheck errors*") (delete-window (get-buffer-window "*Flycheck errors*")))
 	  ))
 
-(defvar jira-issues)
+(add-hook 'dart-mode-hook
+          (lambda () (add-hook 'before-save-hook #'lsp-format-buffer t t)))
 
-(defun commit-with-task ()
-  "Choose jira task and auto add task id as commit prefix.
-Need to custom some variables before use this: org-jira-custom-jqls, jiralib-url."
-
- ;; example jql for current user in progress task: assignee = currentUser() and status = "In Progress" order by created DESC
-  (interactive)
-  (let ((key nil) (key2 nil) (task nil) (final nil) (word nil) (summary nil) (task-id nil))
-  (setq jira-issues (jiralib-do-jql-search  (car (cdr (car org-jira-custom-jqls)))))
-  (dolist (issue jira-issues)
-    (setq key (car (seq-filter (lambda (x) (string= (car x) "key")) issue)))
-    (setq key2 (cdr key))
-    (setq issue (car (seq-filter (lambda (x) (string= (car x) "fields")) issue)))
-
-    (setq summary (seq-reduce (lambda (a b)
-			    (setq word (cond
-					((stringp b) nil)
-					((symbolp b) nil)
-					((string= (car b) "summary")
-					  (concat a (cdr b))
-					 )
-					))
-			    (or word a)
-			    ) issue "")
-	  )
-    (setq task (concat key2 " " summary))
-    (setq final (append final (list task)))
-    )
-  (setq task (ivy-read "Choose your task:" final))
-  (setq task-id (car (split-string task)))
-  (setq task-id (concat "[" task-id "] "))
-  (magit-run-git "commit" "--message" task-id)
-  (magit-commit-create '("--amend"))
-  ))
-
-(transient-append-suffix 'magit-commit "c"
-  '("j" "Commit with jira" commit-with-task))
+(with-eval-after-load 'projectile
+  (add-to-list 'projectile-project-root-files-bottom-up "pubspec.yaml")
+  (add-to-list 'projectile-project-root-files-bottom-up "BUILD"))
 
 (provide '.emacs)
 ;;; .emacs ends here

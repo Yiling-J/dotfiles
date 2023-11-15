@@ -14,7 +14,7 @@
    '((:jql " assignee = currentUser() and status = \"In Progress\" order by created DESC" :filename "jira")))
  '(org-jira-use-status-as-todo t)
  '(package-selected-packages
-   '(yaml-mode lsp-python-ms 0blayout which-key parrot doom-modeline use-package lsp-ui yasnippet lsp-mode go-mode vterm magit-todos org-jira csv-mode docker-tramp json-mode markdown-mode git-gutter-fringe pythonic prettier-js add-node-modules-path rust-mode editorconfig expand-region flycheck-color-mode-line flycheck company-anaconda anaconda-mode counsel-projectile counsel tangotango-theme dumb-jump nyan-mode zenburn-theme powerline neotree all-the-icons magit helm-ebdb))
+   '(yaml-mode lsp-python-ms 0blayout which-key parrot doom-modeline use-package lsp-ui yasnippet lsp-mode go-mode vterm magit-todos org-jira csv-mode json-mode markdown-mode git-gutter-fringe pythonic prettier-js add-node-modules-path rust-mode editorconfig expand-region flycheck-color-mode-line flycheck company-anaconda anaconda-mode counsel-projectile counsel tangotango-theme dumb-jump nyan-mode zenburn-theme powerline neotree all-the-icons magit helm-ebdb))
  '(safe-local-variable-values
    '((magit-todos-exclude-globs "*.map" "*.html" "*.po" "*.mo" "*.pyc" "*.csv" "*.json"))))
 (custom-set-faces
