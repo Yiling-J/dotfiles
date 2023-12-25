@@ -26,7 +26,6 @@
        (proto (if no-ssl "http" "https")))
   ;; Comment/uncomment these two lines to enable/disable MELPA and MELPA Stable as desired
   (add-to-list 'package-archives (cons "melpa" (concat proto "://melpa.org/packages/")) t)
-  ;;(add-to-list 'package-archives (cons "melpa-stable" (concat proto "://stable.melpa.org/packages/")) t)
   (when (< emacs-major-version 24)
     ;; For important compatibility libraries like cl-lib
     (add-to-list 'package-archives '("gnu" . (concat proto "://elpa.gnu.org/packages/")))))
@@ -44,10 +43,8 @@
 (require 'tramp)
 (require 'transient)
 (require 'magit)
-(require 'org-jira)
 (require 'ivy)
 (require 'lsp-mode)
-(require 'prettier-js)
 (require 'js)
 
 (menu-bar-mode -1)
@@ -89,9 +86,6 @@
 (setq auto-save-file-name-transforms `((".*" ,autosave-dir t)))
 (setq tramp-backup-directory-alist backup-directory-alist)
 (setq tramp-auto-save-directory autosave-dir)
-(setq prettier-js-args '(
-  "--single-quote"
-  ))
 
 (setq gc-cons-threshold 100000000)
 (setq read-process-output-max (* 1024 1024)) ;; 1mb
