@@ -114,6 +114,7 @@
 (add-hook 'python-mode-hook 'blacken-mode)
 (add-hook 'rustic-mode-hook #'lsp)
 (add-hook 'dart-mode-hook 'lsp)
+(add-hook 'dart-mode-hook 'yas-minor-mode)
 
 (setq gc-cons-threshold (* 100 1024 1024)
       read-process-output-max (* 1024 1024))
