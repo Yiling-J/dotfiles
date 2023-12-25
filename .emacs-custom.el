@@ -10,7 +10,7 @@
  '(lsp-ui-doc-position 'at-point)
  '(lsp-ui-doc-show-with-cursor t)
  '(package-selected-packages
-   '(dart-mode lsp-pyright lsp-jedi prettier exec-path-from-shell nerd-icons yaml-mode lsp-python-ms 0blayout which-key parrot doom-modeline use-package lsp-ui yasnippet lsp-mode go-mode vterm magit-todos csv-mode json-mode markdown-mode git-gutter-fringe pythonic prettier-js add-node-modules-path rust-mode editorconfig expand-region flycheck-color-mode-line flycheck company-anaconda anaconda-mode counsel-projectile counsel tangotango-theme dumb-jump nyan-mode zenburn-theme powerline neotree all-the-icons magit helm-ebdb))
+   '(dart-mode lsp-pyright lsp-jedi exec-path-from-shell nerd-icons yaml-mode lsp-python-ms 0blayout which-key parrot doom-modeline use-package lsp-ui yasnippet lsp-mode go-mode vterm magit-todos csv-mode json-mode markdown-mode git-gutter-fringe pythonic prettier-js add-node-modules-path rust-mode editorconfig expand-region flycheck-color-mode-line flycheck company-anaconda anaconda-mode counsel-projectile counsel tangotango-theme dumb-jump nyan-mode zenburn-theme powerline neotree all-the-icons magit helm-ebdb))
  '(safe-local-variable-values
    '((magit-todos-exclude-globs "*.map" "*.html" "*.po" "*.mo" "*.pyc" "*.csv" "*.json")))
  '(split-height-threshold nil)
