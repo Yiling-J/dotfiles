@@ -1,11 +1,9 @@
 ;;; My emacs settings
 
 ;;; Code:
-
 (setq custom-file "~/.emacs-custom.el")
 (load custom-file)
-(add-to-list 'default-frame-alist '(fullscreen . fullboth))
-(setq ns-use-native-fullscreen t)
+
 (cua-mode t)
 (setq cua-auto-tabify-rectangles nil) ;; Don't tabify after rectangle commands
 (transient-mark-mode 1) ;; No region when it is not highlighted
