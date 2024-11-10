@@ -89,7 +89,6 @@
 
 (setq gc-cons-threshold 100000000)
 (setq read-process-output-max (* 1024 1024)) ;; 1mb
-(setq rustic-format-on-save t)
 (setq lsp-dart-flutter-widget-guides nil)
 (setq lsp-enable-on-type-formatting nil)
 (setq mac-option-key-is-meta t)
@@ -103,27 +102,30 @@
 (add-hook 'python-mode-hook
                 (lambda () (add-to-list 'write-file-functions 'delete-trailing-whitespace)))
 
-(add-hook 'flycheck-after-syntax-check-hook #'error-list)
+;; (add-hook 'flycheck-after-syntax-check-hook #'error-list)
+(add-hook 'flycheck-after-syntax-check-hook
+          (lambda  ()
+            (if flycheck-current-errors
+                (flycheck-list-errors)
+	      (if (get-buffer-window "*Flycheck errors*") (delete-window (get-buffer-window "*Flycheck errors*")))
+              )))
 (add-hook 'go-mode-hook 'lsp-deferred)
 (add-hook 'go-mode-hook 'yas-minor-mode)
 (add-hook 'js-mode-hook 'prettier-js-mode)
 (add-hook 'js-mode-hook 'lsp-deferred)
+(add-hook 'typescript-mode-hook 'lsp-deferred)
+(add-hook 'typescript-mode-hook 'prettier-js-mode)
 (add-hook 'before-save-hook #'gofmt-before-save)
-;; (add-hook 'before-save-hook #'lsp-organize-imports)
+(add-hook 'before-save-hook #'lsp-organize-imports)
 (add-hook 'before-save-hook 'parrot-start-animation)
 (add-hook 'python-mode-hook 'blacken-mode)
-(add-hook 'rustic-mode-hook #'lsp)
+(add-hook 'python-mode-hook 'lsp-deferred)
+(add-hook 'rust-mode-hook #'lsp)
 (add-hook 'dart-mode-hook 'lsp)
 (add-hook 'dart-mode-hook 'yas-minor-mode)
 
 (setq gc-cons-threshold (* 100 1024 1024)
       read-process-output-max (* 1024 1024))
-
-(use-package lsp-jedi
-  :ensure t
-  :config
-  (with-eval-after-load "lsp-mode"
-    (add-to-list 'lsp-disabled-clients 'mspyls)))
 
 (use-package doom-modeline
   :ensure t
@@ -132,12 +134,6 @@
 (use-package parrot
   :config
   (parrot-mode))
-
-(use-package lsp-pyright
-  :ensure t
-  :hook (python-mode . (lambda ()
-                          (require 'lsp-pyright)
-                          (lsp-deferred))))
 
 (defvar-local flycheck-local-checkers nil)
   (defun +flycheck-checker-get(fn checker property)
@@ -179,13 +175,16 @@
  '(("gopls.completeUnimported" t t)
    ("gopls.staticcheck" t t)))
 
-(defun error-list ()
-          (if (>  (length (flycheck-mode-line-status-text)) 6)
-          (list-flycheck-errors)
-	  (if (get-buffer-window "*Flycheck errors*") (delete-window (get-buffer-window "*Flycheck errors*")))
-	  ))
+;; (defun error-list ()
+;;           (if (>  (length (flycheck-mode-line-status-text)) 6)
+;;           (list-flycheck-errors)
+;; 	  (if (get-buffer-window "*Flycheck errors*") (delete-window (get-buffer-window "*Flycheck errors*")))
+;; 	  ))
 
 (add-hook 'dart-mode-hook
+          (lambda () (add-hook 'before-save-hook #'lsp-format-buffer t t)))
+
+(add-hook 'rust-mode-hook
           (lambda () (add-hook 'before-save-hook #'lsp-format-buffer t t)))
 
 (with-eval-after-load 'projectile
