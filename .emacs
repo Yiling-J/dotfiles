@@ -169,7 +169,7 @@
 
 (set-face-background 'hl-line "#3e4446")
 
-(global-set-key (kbd "C-<return>") 'counsel-semantic-or-imenu)
+(global-set-key (kbd "M-<return>") 'counsel-semantic-or-imenu)
 
 (lsp-register-custom-settings
  '(("gopls.completeUnimported" t t)
