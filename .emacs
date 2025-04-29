@@ -95,6 +95,7 @@
 (setq mac-command-key-is-meta nil)
 (setq mac-option-modifier 'meta)
 (setq mac-command-modifier 'control)
+(setq lsp-apply-edits-after-file-operations nil)
 
 (add-hook 'after-init-hook 'global-company-mode)
 (add-hook 'after-init-hook #'global-flycheck-mode)
@@ -118,7 +119,6 @@
 (add-hook 'before-save-hook #'gofmt-before-save)
 (add-hook 'before-save-hook #'lsp-organize-imports)
 (add-hook 'before-save-hook 'parrot-start-animation)
-(add-hook 'python-mode-hook 'blacken-mode)
 (add-hook 'python-mode-hook 'lsp-deferred)
 (add-hook 'rust-mode-hook #'lsp)
 (add-hook 'dart-mode-hook 'lsp)
